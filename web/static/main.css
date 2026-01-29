@@ -1,0 +1,16 @@
+body{
+    color:#e5c877;
+    background:#181818;
+    max-width:800px;
+    margin:auto;
+}
+a{
+    color:#4188e0;
+}
+a:visited{
+    color:#b675ef;
+}
+table, th, td{
+    border: solid 1px grey;
+    text-align: left;
+}

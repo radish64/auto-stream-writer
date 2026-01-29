@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title id="title">Host</title>
+        <link rel=stylesheet type=text/css href="/static/main.css">
+    </head>
+    <body>
+        <div id="hostinfo">
+        </div>
+        <form method="get" action="/edit-host/">
+            <button type="submit" name='id' value="{{id}}"> Edit </button>
+        </form>
+        <form method="post" action="/remove-host/">
+            <button type="submit" name='id' value="{{id}}"> Remove </button>
+        </form>
+    </body>
+    <script type="text/javascript">
+        const getHostPage = async () => {
+            const response = await fetch('/host-details?id={{id}}', {method: 'GET',});
+            const hostData = await response.json();
+            var hostDiv = document.getElementById("hostinfo");
+            var title = document.getElementById("title");
+            await hostData.forEach(function(object){
+                console.log("got here");
+                if ( object[3] ){
+                    hostDiv.innerHTML +=`<img style='float:right; padding-left:5px;' src='/static/${object[3]}' width=200px />`;
+                }
+                hostDiv.innerHTML+=`<h1>${object[1]}</h1>`
+                if ( object[2] ){
+                    hostDiv.innerHTML+=`<p>${object[2]}</p>`
+                }
+                title.innerHTML=object[1];
+                console.log(object);
+            });
+        }
+        getHostPage();
+
+        const updateBox = async (id) => {
+            await fetch(`/complete?id=${id}`, {method: 'GET',});
+        }
+    </script>
+</html>

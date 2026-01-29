@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Edit</title>
+        <link rel=stylesheet type=text/css href="/static/main.css">
+    </head>
+    <body>
+        <h1 id="showtitleheader"></h1>
+        <h3>Edit</h3>
+        <form id="editForm" method="post" action="/edit-submit/" enctype="multipart/form-data">
+            <label>
+                Name:
+                <br />
+                <input id="name" name="submitted-name" type="text" />
+            </label>
+            <br />
+            <label>
+                Host:
+                <br />
+                <select id="host1" name="submitted-host1">
+                </select>
+            </label>
+            <br />
+            <label>
+                Host:
+                <br />
+                <select id="host2" name="submitted-host2">
+                </select>
+            </label>
+            <br />
+            <label>
+                Start Time:
+                <br />
+                <select id="starttime" name="submitted-start">
+                    <option value=0>12:00 AM</option>
+                    <option value=1>1:00 AM</option>
+                    <option value=2>2:00 AM</option>
+                    <option value=3>3:00 AM</option>
+                    <option value=4>4:00 AM</option>
+                    <option value=5>5:00 AM</option>
+                    <option value=6>6:00 AM</option>
+                    <option value=7>7:00 AM</option>
+                    <option value=8>8:00 AM</option>
+                    <option value=9>9:00 AM</option>
+                    <option value=10>10:00 AM</option>
+                    <option value=11>11:00 AM</option>
+                    <option value=12>12:00 PM</option>
+                    <option value=13>1:00 PM</option>
+                    <option value=14>2:00 PM</option>
+                    <option value=15>3:00 PM</option>
+                    <option value=16>4:00 PM</option>
+                    <option value=17>5:00 PM</option>
+                    <option value=18>6:00 PM</option>
+                    <option value=19>7:00 PM</option>
+                    <option value=20>8:00 PM</option>
+                    <option value=21>9:00 PM</option>
+                    <option value=22>10:00 PM</option>
+                    <option value=23>11:00 PM</option>
+                </select>
+            </label>
+            <br />
+            <label>
+                End Time:
+                <br />
+                <select id="endtime" name="submitted-end">
+                    <option value=0>12:00 AM</option>
+                    <option value=1>1:00 AM</option>
+                    <option value=2>2:00 AM</option>
+                    <option value=3>3:00 AM</option>
+                    <option value=4>4:00 AM</option>
+                    <option value=5>5:00 AM</option>
+                    <option value=6>6:00 AM</option>
+                    <option value=7>7:00 AM</option>
+                    <option value=8>8:00 AM</option>
+                    <option value=9>9:00 AM</option>
+                    <option value=10>10:00 AM</option>
+                    <option value=11>11:00 AM</option>
+                    <option value=12>12:00 PM</option>
+                    <option value=13>1:00 PM</option>
+                    <option value=14>2:00 PM</option>
+                    <option value=15>3:00 PM</option>
+                    <option value=16>4:00 PM</option>
+                    <option value=17>5:00 PM</option>
+                    <option value=18>6:00 PM</option>
+                    <option value=19>7:00 PM</option>
+                    <option value=20>8:00 PM</option>
+                    <option value=21>9:00 PM</option>
+                    <option value=22>10:00 PM</option>
+                    <option value=23>11:00 PM</option>
+                </select>
+            </label>
+            <br />
+            <label>
+                Weekday:
+                <br />
+                <select id="weekday" name="submitted-weekday">
+                    <option value=0>Monday</option>
+                    <option value=1>Tuesday</option>
+                    <option value=2>Wednesday</option>
+                    <option value=3>Thursdau</option>
+                    <option value=4>Friday</option>
+                    <option value=5>Saturday</option>
+                    <option value=6>Sunday</option>
+                </select>
+            </label>
+            <br />
+            <label>
+                Description:
+                <br />
+                <textarea id="description" name="submitted-desc" rows=6 cols=40></textarea>
+            </label>
+            <br />
+            <label>
+                Cover Image:
+                <br />
+                <div id="coverimage">
+                </div>
+                <input id="image" name="submitted-image" type="file" />
+            </label>
+            <br />
+            <button type="submit" name="id" value={{id}} >Save</button>
+        </form>
+    </body>
+    <script type="text/javascript">
+        (async () => {
+            const getShowInformation = async () => {
+                const showResponse = await fetch('/details/?id={{id}}', {method: 'GET',});
+                const showData = await showResponse.json();
+                await showData.forEach(function(object){
+                    document.getElementById("showtitleheader").innerHTML = object[0];
+                    document.getElementById("name").setAttribute("value", object[0]);
+
+                    /* auto select the correct host(s) */
+                    document.getElementById("host1").setAttribute("selected", object[1][0][0]);
+                    if (object[1].length > 1){
+                        document.getElementById("host2").setAttribute("selected", object[1][1][0]);
+                    }
+                    else{
+                        document.getElementById("host2").setAttribute("selected", "None");
+                    }
+                    console.log(document.getElementById("host2").getAttribute("selected"));
+
+                    /* auto select the correct start/end times and weekday */
+                    var selectStartTime = document.getElementById("starttime");
+                    selectStartTime.setAttribute("selected", object[2]);
+                    for (var i = 0; i <selectStartTime.children.length; ++i){
+                        if (selectStartTime.children[i].value == selectStartTime.getAttribute("selected")){
+                            selectStartTime.children[i].setAttribute("selected","selected");
+                        }
+                    }
+
+                    var selectEndTime = document.getElementById("endtime");
+                    selectEndTime.setAttribute("selected", object[3]);
+                    for (var i = 0; i <selectEndTime.children.length; ++i){
+                        if (selectEndTime.children[i].value == selectEndTime.getAttribute("selected")){
+                            selectEndTime.children[i].setAttribute("selected","selected");
+                        }
+                    }
+
+                    var selectWeekday = document.getElementById("weekday");
+                    selectWeekday.setAttribute("selected", object[4]);
+                    for (var i = 0; i <selectWeekday.children.length; ++i){
+                        if (selectWeekday.children[i].value == selectWeekday.getAttribute("selected")){
+                            selectWeekday.children[i].setAttribute("selected","selected");
+                        }
+                    }
+                    document.getElementById("description").innerHTML = object[5];
+                    
+                    if ( object[6] ){
+                        var img = document.createElement('img');
+                        img.setAttribute("src", `/static/${object[6]}`);
+                        img.setAttribute("width", "200px");
+                        coverimage.appendChild(img);
+                    }
+                });
+            }
+            const getHostInformation = async () => {
+                const hostResponse = await fetch('/list-hosts/', {method: 'GET',});
+                const hostData = await hostResponse.json();
+                await hostData.forEach(function(object){
+                    var hostOpt = document.createElement('option');
+                    hostOpt.setAttribute("value", object[0]);
+                    hostOpt.innerHTML = object[1];
+                    document.getElementById("host1").appendChild(hostOpt)
+
+                    var otherHostOpt = document.createElement('option');
+                    otherHostOpt.setAttribute("value", object[0]);
+                    otherHostOpt.innerHTML = object[1];
+                    document.getElementById("host2").appendChild(otherHostOpt)
+                });
+
+                var noneHostOpt = document.createElement('option');
+                noneHostOpt.setAttribute("value", "None");
+                noneHostOpt.innerHTML = "None";
+                document.getElementById("host2").appendChild(noneHostOpt)
+            }
+
+            const getSelectedHost = async () => {
+                var selectHost1 = document.getElementById("host1");
+                for (var i = 0; i < selectHost1.children.length; ++i){
+                    if (selectHost1.children[i].innerHTML == selectHost1.getAttribute("selected")){
+                        selectHost1.children[i].setAttribute("selected","selected");
+                    }
+                }
+                var selectHost2 = document.getElementById("host2");
+                for (var i = 0; i < selectHost2.children.length; ++i){
+                    if (selectHost2.children[i].innerHTML == selectHost2.getAttribute("selected")){
+                        selectHost2.children[i].setAttribute("selected","selected");
+                    }
+                }
+            }
+
+            await getHostInformation();
+            await getShowInformation();
+            await getSelectedHost();
+
+        })();
+
+        const updateBox = async (id) => {
+            await fetch(`/complete?id=${id}`, {method: 'GET',});
+        }
+    </script>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Add Host</title>
+        <link rel=stylesheet type=text/css href="/static/main.css">
+    </head>
+    <body>
+        <h1 id="showtitleheader"></h1>
+        <h3>Add Host</h3>
+        <form id="addForm" method="post" action="/add-host-submit/" enctype="multipart/form-data">
+            <label>
+                Name:
+                <br />
+                <input id="name" name="submitted-name" type="text" />
+            </label>
+            <br />
+            <label>
+                Bio:
+                <br />
+                <textarea id="bio" name="submitted-bio" rows=6 cols=40></textarea>
+            </label>
+            <br />
+            <label>
+                Cover Image:
+                <br />
+                <div id="avi-image">
+                </div>
+                <input id="image" name="submitted-image" type="file" />
+            </label>
+            <br />
+            <button type="submit" name="id" >Save</button>
+        </form>
+    </body>
+    <script type="text/javascript">
+    </script>
+</html>

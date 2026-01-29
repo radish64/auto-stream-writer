@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title id="title">Show</title>
+        <link rel=stylesheet type=text/css href="/static/main.css">
+    </head>
+    <body>
+        <div id="showinfo">
+        </div>
+        <form method="get" action="/edit/">
+            <button type="submit" name='id' value="{{id}}"> Edit </button>
+        </form>
+        <form method="post" action="/remove-show/">
+            <button type="submit" name='id' value="{{id}}"> Remove </button>
+        </form>
+    </body>
+    <script type="text/javascript">
+        const getShowPage = async () => {
+            const Days = Object.freeze({
+                MONDAY: 0,
+                TUESDAY: 1,
+                WEDNESDAY: 2,
+                THURSDAY: 3,
+                FRIDAY: 4,
+                SATURDAY: 5,
+                SUNDAY: 6
+            });       
+            const response = await fetch('/details?id={{id}}', {method: 'GET',});
+            const showData = await response.json();
+            var showDiv = document.getElementById("showinfo");
+            var title = document.getElementById("title");
+            await showData.forEach(function(object){
+                var startTime, endTime;
+                if(object[2] > 12){
+                    var normalTime = object[2] % 12;
+                    startTime = normalTime + "PM";
+                }
+                else{
+                    startTime = object[2] + "AM";
+                }
+                if(object[3] > 12){
+                    var normalTime = object[3] % 12;
+                    endTime = normalTime + "PM";
+
+                }
+                else{
+                    endTime = object[3] + "AM";
+                }
+                var weekday;
+                switch(object[4]){
+                    case Days.MONDAY:
+                        weekday = "Monday";
+                        break;
+                    case Days.TUESDAY:
+                        weekday = "Tuesday";
+                        break;
+                    case Days.WEDNESDAY:
+                        weekday = "Wednesday";
+                        break;
+                    case Days.THURSDAY:
+                        weekday = "Thursday";
+                        break;
+                    case Days.FRIDAY:
+                        weekday = "Friday";
+                        break;
+                    case Days.SATURDAY:
+                        weekday = "Saturday";
+                        break;
+                    case Days.SUNDAY:
+                        weekday = "Sunday";
+                        break;
+                }
+                var hosts;
+                if (object[1].length > 1){
+                    hosts=`<a href="/host/?id=${object[1][0][1]}">${object[1][0][0]}</a> and <a href="/host/?id=${object[1][1][1]}">${object[1][1][0]}</a>`
+                }
+                else{
+                    hosts=`<a href="/host/?id=${object[1][0][1]}">${object[1][0][0]}</a>`
+                }
+                console.log("got here");
+                if ( object[6] ){
+                    showDiv.innerHTML +=`<img style='float:right; padding-left:10px;' src='/static/${object[6]}' width=200px />`;
+                }
+                showDiv.innerHTML+=`<h1>${object[0]}</h1>` +
+                    `<h2>${hosts}</h2>` +
+                    `<h2>${weekday} ${startTime} - ${endTime}</h2>` +
+                    `<p>${object[5]}</p>`;
+                title.innerHTML=object[0];
+                console.log(object);
+            });
+        }
+        getShowPage();
+
+        const updateBox = async (id) => {
+            await fetch(`/complete?id=${id}`, {method: 'GET',});
+        }
+    </script>
+</html>

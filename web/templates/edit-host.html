@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Edit Host</title>
+        <link rel=stylesheet type=text/css href="/static/main.css">
+    </head>
+    <body>
+        <h1 id="hosttitleheader"></h1>
+        <h3>Edit Host</h3>
+        <form id="editForm" method="post" action="/edit-host-submit/" enctype="multipart/form-data">
+            <label>
+                Name:
+                <br />
+                <input id="name" name="submitted-name" type="text" />
+            </label>
+            <br />
+            <label>
+                Bio:
+                <br />
+                <textarea id="bio" name="submitted-bio" rows=6 cols=40></textarea>
+            </label>
+            <br />
+            <label>
+                Cover Image:
+                <br />
+                <div id="avi-image">
+                </div>
+                <input id="image" name="submitted-image" type="file" />
+            </label>
+            <br />
+            <button type="submit" name="id" value={{id}} >Save</button>
+        </form>
+    </body>
+    <script type="text/javascript">
+        const getHostInformation = async () => {
+            const response = await fetch('/host-details?id={{id}}', {method: 'GET',});
+            const hostData = await response.json();
+            var title = document.getElementById("title");
+            await hostData.forEach(function(object){
+                console.log("got here");
+                document.getElementById("name").setAttribute("value", object[1]);
+                document.getElementById("bio").innerHTML = object[2];
+                if ( object[3] ){
+                    var img = document.createElement('img');
+                    img.setAttribute("src", `/static/${object[3]}`);
+                    img.setAttribute("width", "200px");
+                    document.getElementById("avi-image").appendChild(img);
+                }
+                console.log(object);
+            });
+        }
+        getHostInformation();
+    </script>
+</html>

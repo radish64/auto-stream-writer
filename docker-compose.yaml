@@ -1,0 +1,43 @@
+services:
+    postgres:
+      image: postgres
+      restart: unless-stopped
+      ports:
+        - 5432:5432
+      volumes:
+        - ./postgres-data:/var/lib/postgresql
+      environment:
+        POSTGRES_PASSWORD: password
+      container_name: postgres
+      healthcheck:
+        test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+    init:
+      build: ./init
+      depends_on:
+        postgres:
+          condition: service_healthy
+    recorder:
+      build: ./recorder
+      restart: unless-stopped
+      volumes:
+        - ./recordings:/recordings
+      environment:
+        STREAM_URL: PUT YOUR STREAM URL HERE
+        RCLONE_DRIVE: PUT YOUR RCLONE DRIVE HERE (in brackets on the first line of rclone.conf)
+      depends_on:
+        postgres:
+          condition: service_healthy
+    web:
+      build: ./web
+      restart: unless-stopped
+      ports: 
+        - "0.0.0.0:5000:5000"
+      depends_on:
+        postgres:
+          condition: service_healthy
+volumes:
+    postgres-data:
+    recordings:

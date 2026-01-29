@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Shows</title>
+        <link rel=stylesheet type=text/css href="/static/main.css">
+        <style>
+            #schedule{
+                border: solid 1px grey;
+                margin: 5px;
+                padding: 5px;
+            }
+            #Monday{
+                color:#fc6453;
+            }
+            #Tuesday{
+                color:#fcc153;
+            }
+            #Wednesday{
+                color:#e9fc53;
+            }
+            #Thursday{
+                color:#6bfc4e;
+            }
+            #Friday{
+                color:#4dd8ff;
+            }
+            #Saturday{
+                color:#d162fc;
+            }
+            #Sunday{
+                color:#ff63ea;
+            }
+        </style>
+    </head>
+    <body>
+        <nav style="float:right;">
+            <ul>
+                <li style="display: inline;"><a href="/add-host">Add Host</a></li>
+                <li style="display: inline;"><a href="/add-show">Add Show</a></li>
+            </ul>
+        </nav>
+        <!--<img style="display:inline; height:64px;" src="/favicon.ico" />-->
+        <h1 style="display:inline; margin-bottom:15px">Radio Schedule</h1>
+        <div id="schedule">
+            <div id="Sunday">
+                <h2>Sunday:</h2>
+            </div>
+            <div id="Monday">
+                <h2>Monday:</h2>
+            </div>
+            <div id="Tuesday">
+                <h2>Tuesday:</h2>
+            </div>
+            <div id="Wednesday">
+                <h2>Wednesday:</h2>
+            </div>
+            <div id="Thursday">
+                <h2>Thursday:</h2>
+            </div>
+            <div id="Friday">
+                <h2>Friday:</h2>
+            </div>
+            <div id="Saturday">
+                <h2>Saturday:</h2>
+            </div>
+        </div>
+    </body>
+    <script type="text/javascript">
+            const Days = Object.freeze({
+                MONDAY: 0,
+                TUESDAY: 1,
+                WEDNESDAY: 2,
+                THURSDAY: 3,
+                FRIDAY: 4,
+                SATURDAY: 5,
+                SUNDAY: 6
+            });       
+            const getTodoList = async () => {
+            const response = await fetch('/list-shows', {method: 'GET',});
+            const showData = await response.json();
+            var divMon = document.getElementById("Monday");
+            var divTue = document.getElementById("Tuesday");
+            var divWed = document.getElementById("Wednesday");
+            var divThu = document.getElementById("Thursday");
+            var divFri = document.getElementById("Friday");
+            var divSat = document.getElementById("Saturday");
+            var divSun = document.getElementById("Sunday");
+            await showData.forEach(function(object){
+                var startTime, endTime;
+                if(object[3] > 12){
+                    var normalTime = object[3] % 12;
+                    startTime = normalTime + "PM";
+                }
+                else{
+                    startTime = object[3] + "AM";
+                }
+                if(object[4] > 12){
+                    var normalTime = object[4] % 12;
+                    endTime = normalTime + "PM";
+
+                }
+                else{
+                    endTime = object[4] + "AM";
+                }
+                var divShow = document.createElement('div');
+                divShow.innerHTML = `<ul>`+
+                    `<li style="display:inline; padding-left: 5px;">${startTime} - ${endTime}: </li>` +
+                    `<li style="display:inline; padding-left: 5px;"><a href=/show?id=${object[0]}>${object[1]}</a></li>`; 
+                    /* `<li style="display:inline; padding-left: 5px;">${object[2]}</li>` + */
+                    `</ul>`;
+                divShow.setAttribute("style", "display: inline;");
+                switch(object[5]){
+                    case Days.MONDAY:
+                        divMon.append(divShow);
+                        break;
+                    case Days.TUESDAY:
+                        divTue.append(divShow);
+                        break;
+                    case Days.WEDNESDAY:
+                        divWed.append(divShow);
+                        break;
+                    case Days.THURSDAY:
+                        divThu.append(divShow);
+                        break;
+                    case Days.FRIDAY:
+                        divFri.append(divShow);
+                        break;
+                    case Days.SATURDAY:
+                        divSat.append(divShow);
+                        break;
+                    case Days.SUNDAY:
+                        divSun.append(divShow);
+                        break;
+                }
+            });
+        }
+        getTodoList();
+
+        const updateBox = async (id) => {
+            await fetch(`/complete?id=${id}`, {method: 'GET',});
+        }
+    </script>
+</html>
