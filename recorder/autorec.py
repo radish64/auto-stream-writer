@@ -37,7 +37,7 @@ if __name__ == "__main__":
             show = getShow()
             print (f"Recording {show[1]}!")
             recording_filename = f"/recordings/{show[1]}-{dt.datetime.now().strftime('%Y-%m-%d')}.mp3"
-            p = subprocess.Popen(["ffmpeg", "-i", steam_url, recording_filename])
+            p = subprocess.Popen(["ffmpeg", "-i", stream_url, recording_filename])
             enddate = dt.date.min
             if (show[3] == 0):
                 enddate=dt.date(1,1,2)
